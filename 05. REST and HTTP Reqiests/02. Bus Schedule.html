@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Schedule</title>
+    <style>
+        #schedule {
+            text-align: center;
+            width: 400px;
+        }
+
+        input {
+            width: 120px;
+        }
+
+        #info {
+            background-color: aquamarine;
+            border: 1px solid black;
+            margin: 0.25em;
+        }
+
+        .info {
+            font-size: 1.5em;
+            padding: 0.25em;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<div id="schedule">
+    <div id="info"><span class="info">Not Connected</span></div>
+    <div id="controls">
+        <input id="depart" value="Depart" type="button" onclick="result.depart()">
+        <input id="arrive" value="Arrive" type="button" onclick="result.arrive()" disabled="true">
+    </div>
+</div>
+<script>
+    function solve() {
+        $.ajax({
+            url: 'https://judgetests.firebaseio.com/schedule/.json',
+            success: (data) => {
+                console.log(data);
+            }
+        });
+
+        let arriveBtn = $('#arrive');
+        let departBtn = $('#depart');
+        let info = $('.info');
+
+        let preText = '';
+
+        function depart() {
+            departBtn.attr('disabled', 'true');
+            arriveBtn.removeAttr('disabled');
+            preText = "Next stop ";
+            findBusStop();
+
+            function findBusStop() {
+                let id = 'depot';
+
+                if(info.attr('data-nextStop')) {
+                    id = info.attr('data-nextStop');
+                }
+
+                $.ajax({
+                    url: 'https://judgetests.firebaseio.com/schedule/' + id + '.json',
+                    success: success,
+                    error: error
+                });
+
+                function success(data) {
+                    info.attr('data-nextStop', data.next);
+                    info.text(preText + data.name);
+                }
+
+                function error() {
+                    info.text('Error');
+                }
+            }
+        }
+
+        function arrive() {
+            arriveBtn.attr('disabled', 'true');
+            departBtn.removeAttr('disabled');
+            info.text(info.text().replace('Next stop', 'Arriving at'));
+        }
+        return {
+            depart,
+            arrive
+        };
+    }
+
+    let result = solve();
+</script>
+</body>
+</html>

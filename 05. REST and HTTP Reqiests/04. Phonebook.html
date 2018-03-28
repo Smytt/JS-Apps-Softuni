@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phonebook</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<h1>Phonebook</h1>
+<ul id="phonebook"></ul>
+<button id="btnLoad">Load</button>
+
+<h2>Create Contact</h2>
+Person: <input type="text" id="person"/>
+<br>
+Phone: <input type="text" id="phone"/>
+<br>
+<button id="btnCreate">Create</button>
+<script>
+    attachEvents();
+
+    function attachEvents() {
+        $('#btnLoad').on('click', loadContacts)
+
+        $('#btnCreate').on('click', () => {
+            let entry = JSON.stringify({
+                person: $('#person').val(),
+                phone: $('#phone').val()
+            })
+
+            $('#person').val('')
+            $('#phone').val('')
+
+            $.ajax({
+                method: 'POST',
+                url: 'https://phonebook-nakov.firebaseio.com/phonebook.json',
+                data: entry,
+                done: loadContacts()
+            })
+
+        })
+
+        function loadContacts() {
+            $('#phonebook').empty()
+            let contacts
+            $.ajax({
+                url: 'https://phonebook-nakov.firebaseio.com/phonebook.json',
+                success: (res) => {
+                    contacts = res
+                    for (let contact in contacts) {
+                        let btn = $('<button>').text('[Delete]')
+                        btn.on('click', () => {
+                            $.ajax({
+                                method: 'DELETE',
+                                url: `https://phonebook-nakov.firebaseio.com/phonebook/${contact}.json`,
+                                success: () => {
+                                    console.log('hello');
+                                    btn.closest('li').remove()
+                                }
+                            })
+                        })
+                        $('#phonebook')
+                            .append($('<li>')
+                                .append(`${contacts[contact].person}: ${contacts[contact].phone}`)
+                                .append(btn)
+                            )
+                    }
+                },
+            })
+        }
+    }
+</script>
+</body>
+</html>
