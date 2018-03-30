@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<h1>All Posts</h1>
+<button id="btnLoadPosts">Load Posts</button>
+<select id="posts"></select>
+<button id="btnViewPost">View</button>
+<h1 id="post-title">Post Details</h1>
+<ul id="post-body"></ul>
+<h2>Comments</h2>
+<ul id="post-comments"></ul>
+<script>
+    attachEvents();
+
+    function attachEvents() {
+        const URL = 'https://baas.kinvey.com/appdata/kid_S1VqfOscG/'
+        const USER = 'peter'
+        const PASS = 'p'
+        const BASE64 = btoa(`${USER}:${PASS}`)
+        const AUTH = {"Authorization": "Basic " + BASE64}
+        let posts = {}
+
+        $('#btnLoadPosts').click(loadPosts)
+        $('#btnViewPost').click(viewPosts)
+
+        function loadPosts() {
+            $.ajax({
+                url: URL + 'posts/',
+                headers: AUTH,
+            }).then((res) => {
+                $('#posts').empty()
+                for (let post of res) {
+                    $('#posts')
+                        .append($(`<option value="${post._id}">`)
+                            .text(post.title))
+                    posts[post._id] = post
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+
+        function viewPosts() {
+            let postId = $('#posts').find('option:selected').val()
+            $('#post-title').text(posts[postId].title)
+            $('#post-body').text(posts[postId].body)
+            $.ajax({
+                url: URL + 'comments/',
+                headers: AUTH,
+            }).then((res) => {
+                $('#post-comments').empty()
+                for (let comment of res) {
+                    if (comment.post_id === postId) {
+                        $('#post-comments')
+                            .append($('<li>').text(comment.text))
+                    }
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    }
+
+</script>
+</body>
+</html>
