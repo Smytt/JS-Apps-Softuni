@@ -91,23 +91,24 @@ function startApp() {
 
     function editAd(ad) {
         $('section').hide()
-        $('#viewEditAd').find('input[name=id]').val(ad._id)
-        $('#viewEditAd').find('input[name=publisher]').val(ad.publisher)
-        $('#viewEditAd').find('input[name=title]').val(ad.title)
-        $('#viewEditAd').find('textarea[name=description]').val(ad.description)
-        $('#viewEditAd').find('input[name=datePublished]').val(ad.dateOfPublishing)
-        $('#viewEditAd').find('input[name=price]').val(ad.price)
-        $('#viewEditAd').show()
+        let editAd = $('#viewEditAd')
+        editAd.find('input[name=id]').val(ad._id)
+        editAd.find('input[name=publisher]').val(ad.publisher)
+        editAd.find('input[name=title]').val(ad.title)
+        editAd.find('textarea[name=description]').val(ad.description)
+        editAd.find('input[name=datePublished]').val(ad.dateOfPublishing)
+        editAd.find('input[name=price]').val(ad.price)
+        editAd.show()
 
 
         $('#buttonEditAd').click(editAdConfirm)
 
         function editAdConfirm() {
             let editedAd = {
-                title: $('#viewEditAd').find('input[name=title]').val(),
-                description: $('#viewEditAd').find('textarea[name=description]').val(),
-                dateOfPublishing: $('#viewEditAd').find('input[name=datePublished]').val(),
-                price: $('#viewEditAd').find('input[name=price]').val(),
+                title: editAd.find('input[name=title]').val(),
+                description: editAd.find('textarea[name=description]').val(),
+                dateOfPublishing: editAd.find('input[name=datePublished]').val(),
+                price: editAd.find('input[name=price]').val(),
                 publisher: sessionStorage.getItem('username'),
             }
 
@@ -129,11 +130,12 @@ function startApp() {
     }
 
     function createAd() {
+        let createAd = ('#viewCreateAd')
         let newAd = {
-            title: $('#viewCreateAd').find('input[name=title]').val(),
-            description: $('#viewCreateAd').find('textarea[name=description]').val(),
-            dateOfPublishing: $('#viewCreateAd').find('input[name=datePublished]').val(),
-            price: $('#viewCreateAd').find('input[name=price]').val(),
+            title: createAd.find('input[name=title]').val(),
+            description: createAd.find('textarea[name=description]').val(),
+            dateOfPublishing: createAd.find('input[name=datePublished]').val(),
+            price: createAd.find('input[name=price]').val(),
             publisher: sessionStorage.getItem('username'),
         }
 
