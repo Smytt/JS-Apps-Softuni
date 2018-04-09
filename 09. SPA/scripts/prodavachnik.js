@@ -130,12 +130,12 @@ function startApp() {
     }
 
     function createAd() {
-        let createAd = ('#viewCreateAd')
+        let ad = $('#viewCreateAd')
         let newAd = {
-            title: createAd.find('input[name=title]').val(),
-            description: createAd.find('textarea[name=description]').val(),
-            dateOfPublishing: createAd.find('input[name=datePublished]').val(),
-            price: createAd.find('input[name=price]').val(),
+            title: ad.find('input[name=title]').val(),
+            description: ad.find('textarea[name=description]').val(),
+            dateOfPublishing: ad.find('input[name=datePublished]').val(),
+            price: ad.find('input[name=price]').val(),
             publisher: sessionStorage.getItem('username'),
         }
 
